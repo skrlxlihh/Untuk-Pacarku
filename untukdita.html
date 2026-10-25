@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 1.6th Anniversary, Dita Sukma Ayu 💙</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+  }
+
+  body {
+    background: linear-gradient(180deg, #d6ecff 0%, #bfe3ff 40%, #a9d8ff 100%);
+    position: relative;
+  }
+
+  /* ====== PEMANDANGAN ====== */
+  #scene {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  #scene svg { width: 100%; height: 100%; display: block; }
+
+  /* ====== HUJAN LOVE ====== */
+  #hearts {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .heart {
+    position: absolute;
+    top: -10vh;
+    font-size: 22px;
+    animation: fall linear infinite;
+    opacity: 0.85;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));
+    will-change: transform;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-10vh) rotate(0deg); }
+    100% { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  /* ====== KARTU TEKS ====== */
+  #cardWrap {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    pointer-events: none;
+  }
+  #card {
+    pointer-events: auto;
+    max-width: 720px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+    padding: 34px 30px;
+    box-shadow: 0 20px 50px rgba(40, 100, 170, 0.25);
+    transition: opacity 1s ease, transform 1s ease;
+    scrollbar-width: thin;
+  }
+  #card::-webkit-scrollbar { width: 6px; }
+  #card::-webkit-scrollbar-thumb { background: #8ec5f0; border-radius: 10px; }
+
+  #card.hidden {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+
+  .judul {
+    font-size: clamp(1.15rem, 3.2vw, 1.6rem);
+    color: #1c5d99;
+    text-align: center;
+    margin-bottom: 18px;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: 0.3px;
+  }
+
+  .isi {
+    font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+    color: #2b4a66;
+    text-align: justify;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: #1c5d99;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    animation: blink 0.9s step-start infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ====== KONTROL MUSIK ====== */
+  #musicBtn {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 30;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.9);
+    color: #1c5d99;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(40,100,170,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background 0.2s;
+  }
+  #musicBtn:hover { transform: scale(1.08); background: #fff; }
+  #musicBtn.playing { animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 6px 18px rgba(40,100,170,0.3); }
+    50% { box-shadow: 0 6px 26px rgba(224,80,122,0.5); }
+  }
+
+  #hint {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 30;
+    font-size: 0.75rem;
+    color: #3d6a92;
+    background: rgba(255,255,255,0.75);
+    padding: 8px 14px;
+    border-radius: 20px;
+    opacity: 0;
+    animation: hintFade 6s ease forwards;
+  }
+  @keyframes hintFade {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @media (max-width: 600px) {
+    #card { padding: 24px 20px; border-radius: 18px; }
+    #musicBtn { width: 46px; height: 46px; font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PEMANDANGAN ================= -->
+<div id="scene" aria-hidden="true">
+  <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#d9edff"/>
+        <stop offset="55%" stop-color="#c3e4ff"/>
+        <stop offset="100%" stop-color="#a8d7ff"/>
+      </linearGradient>
+
+      <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#b5dda0"/>
+        <stop offset="40%" stop-color="#97c97e"/>
+        <stop offset="100%" stop-color="#7bb564"/>
+      </linearGradient>
+
+      <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"  stop-color="#7a5230"/>
+        <stop offset="50%" stop-color="#8f6440"/>
+        <stop offset="100%" stop-color="#6b4526"/>
+      </linearGradient>
+
+      <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="#fff7d6" stop-opacity="1"/>
+        <stop offset="60%" stop-color="#ffeaa3" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#ffeaa3" stop-opacity="0"/>
+      </radialGradient>
+
+      <g id="cloud">
+        <ellipse cx="0" cy="0" rx="60" ry="30" fill="#ffffff" opacity="0.85"/>
+        <ellipse cx="45" cy="8" rx="45" ry="24" fill="#ffffff" opacity="0.85"/>
+        <ellipse cx="-45" cy="10" rx="42" ry="22" fill="#ffffff" opacity="0.85"/>
+        <ellipse cx="10" cy="-14" rx="38" ry="24" fill="#ffffff" opacity="0.85"/>
+      </g>
+
+      <!-- Pohon berbunga (template) -->
+      <g id="blossomTree">
+        <path d="M-8 120 Q -10 40 -4 0 Q 0 -8 4 0 Q 10 40 8 120 Z" fill="url(#trunk)"/>
+        <path d="M0 -6 Q -30 -30 -46 -46" stroke="#6b4526" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M0 -6 Q 30 -30 46 -46" stroke="#6b4526" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M0 -14 Q -14 -44 -20 -66" stroke="#6b4526" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M0 -14 Q 14 -44 20 -66" stroke="#6b4526" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- mahkota bunga -->
+        <g fill="#ffb3c8">
+          <circle cx="-40" cy="-56" r="34"/>
+          <circle cx="40"  cy="-56" r="34"/>
+          <circle cx="0"   cy="-86" r="38"/>
+          <circle cx="-22" cy="-80" r="28"/>
+          <circle cx="22"  cy="-80" r="28"/>
+          <circle cx="-52" cy="-40" r="24"/>
+          <circle cx="52"  cy="-40" r="24"/>
+        </g>
+        <g fill="#ff8fb0" opacity="0.9">
+          <circle cx="-30" cy="-64" r="20"/>
+          <circle cx="30"  cy="-64" r="20"/>
+          <circle cx="0"   cy="-92" r="22"/>
+        </g>
+        <g fill="#ffd1de" opacity="0.9">
+          <circle cx="-14" cy="-70" r="12"/>
+          <circle cx="16"  cy="-72" r="11"/>
+          <circle cx="0"   cy="-100" r="12"/>
+        </g>
+        <!-- kelopak jatuh -->
+        <g fill="#ffb3c8" opacity="0.8">
+          <circle cx="-58" cy="-6" r="3"/>
+          <circle cx="60"  cy="4"  r="3"/>
+          <circle cx="-46" cy="30" r="2.5"/>
+          <circle cx="52"  cy="40" r="2.5"/>
+        </g>
+      </g>
+    </defs>
+
+    <!-- Langit -->
+    <rect x="0" y="0" width="1200" height="800" fill="url(#sky)"/>
+
+    <!-- Matahari -->
+    <circle cx="980" cy="120" r="150" fill="url(#sun)"/>
+    <circle cx="980" cy="120" r="42" fill="#fff6cf"/>
+
+    <!-- Awan -->
+    <use href="#cloud" x="180" y="120"/>
+    <use href="#cloud" x="520" y="70" transform="scale(0.8) translate(200,20)"/>
+    <use href="#cloud" x="760" y="180" transform="scale(0.65) translate(400,50)"/>
+
+    <!-- Bukit belakang -->
+    <path d="M0 520 Q 200 440 420 500 T 800 480 T 1200 510 L1200 800 L0 800 Z" fill="#c3e3aa" opacity="0.75"/>
+
+    <!-- ====== KEBUN POHON BERBUNGA (belakang) ====== -->
+    <g opacity="0.55">
+      <use href="#blossomTree" x="120"  y="470" transform="scale(0.7) translate(60,200)"/>
+      <use href="#blossomTree" x="380"  y="460" transform="scale(0.6) translate(300,300)"/>
+      <use href="#blossomTree" x="820"  y="465" transform="scale(0.65) translate(680,260)"/>
+      <use href="#blossomTree" x="1080" y="470" transform="scale(0.7) translate(880,200)"/>
+    </g>
+
+    <!-- ====== TANAH ====== -->
+    <rect x="0" y="560" width="1200" height="240" fill="url(#ground)"/>
+    <g stroke="#5d9440" stroke-width="4" stroke-linecap="round" opacity="0.7">
+      <line x1="80"  y1="600" x2="88"  y2="580"/>
+      <line x1="140" y1="630" x2="150" y2="608"/>
+      <line x1="240" y1="590" x2="250" y2="568"/>
+      <line x1="330" y1="640" x2="340" y2="618"/>
+      <line x1="420" y1="600" x2="430" y2="578"/>
+      <line x1="520" y1="650" x2="530" y2="628"/>
+      <line x1="640" y1="600" x2="650" y2="578"/>
+      <line x1="740" y1="640" x2="750" y2="618"/>
+      <line x1="860" y1="595" x2="870" y2="573"/>
+      <line x1="960" y1="650" x2="970" y2="628"/>
+      <line x1="1080" y1="600" x2="1090" y2="578"/>
+    </g>
+
+    <!-- ====== POHON BERBUNGA KIRI (utama) ====== -->
+    <use href="#blossomTree" x="170" y="560" transform="scale(1.15) translate(-25,-80)"/>
+
+    <!-- ====== POHON BERBUNGA KANAN (utama) ====== -->
+    <use href="#blossomTree" x="1040" y="555" transform="scale(1.1) translate(-90,-70)"/>
+
+    <!-- ====== PASANGAN BERGANDENGAN TANGAN ====== -->
+    <g>
+      <!-- ----- LAKI-LAKI (kiri) ----- -->
+      <g transform="translate(545, 505)">
+        <!-- kaki -->
+        <rect x="-16" y="80" width="14" height="55" rx="7" fill="#3a5f8a"/>
+        <rect x="6"  y="80" width="14" height="55" rx="7" fill="#3a5f8a"/>
+        <ellipse cx="-9" cy="138" rx="12" ry="7" fill="#2b2b2b"/>
+        <ellipse cx="13" cy="138" rx="12" ry="7" fill="#2b2b2b"/>
+
+        <!-- badan / kemeja -->
+        <path d="M-26 20 Q 0 -6 26 20 L30 85 Q 0 98 -30 85 Z" fill="#5aa9e6"/>
+        <path d="M-10 14 L0 30 L10 14 Z" fill="#ffffff"/>
+
+        <!-- tangan kiri (di sisi) -->
+        <path d="M-26 34 Q -44 52 -40 78" stroke="#5aa9e6" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <circle cx="-40" cy="82" r="8" fill="#f3c9a6"/>
+
+        <!-- tangan kanan (menggandeng) -->
+        <path d="M26 34 Q 48 44 62 62" stroke="#5aa9e6" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <circle cx="64" cy="64" r="8" fill="#f3c9a6"/>
+
+        <!-- leher & kepala -->
+        <rect x="-7" y="0" width="14" height="16" rx="6" fill="#f3c9a6"/>
+        <circle cx="0" cy="-18" r="22" fill="#f3c9a6"/>
+        <path d="M-22 -22 Q -22 -46 0 -46 Q 22 -46 22 -22 Q 12 -34 0 -34 Q -12 -34 -22 -22 Z" fill="#2b2b2b"/>
+        <circle cx="-8" cy="-18" r="2.6" fill="#2b2b2b"/>
+        <circle cx="8"  cy="-18" r="2.6" fill="#2b2b2b"/>
+        <path d="M-8 -6 Q 0 2 8 -6" stroke="#b5654a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="-13" cy="-10" r="4" fill="#f7a8a8" opacity="0.6"/>
+        <circle cx="13"  cy="-10" r="4" fill="#f7a8a8" opacity="0.6"/>
+      </g>
+
+      <!-- ----- PEREMPUAN (kanan) ----- -->
+      <g transform="translate(655, 505)">
+        <!-- kaki -->
+        <rect x="-14" y="78" width="13" height="55" rx="6.5" fill="#7a4a7a"/>
+        <rect x="5"   y="78" width="13" height="55" rx="6.5" fill="#7a4a7a"/>
+        <ellipse cx="-7" cy="136" rx="11" ry="6.5" fill="#3a2a3a"/>
+        <ellipse cx="12" cy="136" rx="11" ry="6.5" fill="#3a2a3a"/>
+
+        <!-- gaun -->
+        <path d="M-24 18 Q 0 -4 24 18 L34 80 Q 0 94 -34 80 Z" fill="#f7a8c4"/>
+        <path d="M-24 18 Q 0 -4 24 18 L28 34 Q 0 24 -28 34 Z" fill="#f8c0d4"/>
+
+        <!-- tangan kanan (di sisi) -->
+        <path d="M24 30 Q 44 46 40 74" stroke="#f3c9a6" stroke-width="12" fill="none" stroke-linecap="round"/>
+        <circle cx="40" cy="78" r="8" fill="#f3c9a6"/>
+
+        <!-- tangan kiri (menggandeng) -->
+        <path d="M-24 30 Q -46 44 -62 62" stroke="#f3c9a6" stroke-width="12" fill="none" stroke-linecap="round"/>
+        <circle cx="-64" cy="64" r="8" fill="#f3c9a6"/>
+
+        <!-- leher & kepala -->
+        <rect x="-6" y="-2" width="12" height="15" rx="5" fill="#f3c9a6"/>
+        <circle cx="0" cy="-20" r="21" fill="#f3c9a6"/>
+
+        <!-- rambut panjang -->
+        <path d="M-21 -24 Q -24 -50 0 -50 Q 24 -50 21 -24 Q 26 -6 22 14 Q 18 4 16 -10 Q 8 -32 0 -32 Q -8 -32 -16 -10 Q -18 4 -22 14 Q -26 -6 -21 -24 Z" fill="#3a2418"/>
+
+        <!-- mata bahagia -->
+        <path d="M-12 -20 Q -8 -24 -4 -20" stroke="#3a2418" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M4 -20 Q 8 -24 12 -20" stroke="#3a2418" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+        <!-- mulut tersenyum -->
+        <path d="M-5 -8 Q 0 -2 5 -8" stroke="#b5654a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+        <!-- pipi merona -->
+        <circle cx="-14" cy="-12" r="4.5" fill="#f78a9a" opacity="0.7"/>
+        <circle cx="14"  cy="-12" r="4.5" fill="#f78a9a" opacity="0.7"/>
+      </g>
+
+      <!-- ----- TANGAN BERGANDENGAN (jari terjalin) ----- -->
+      <g>
+        <!-- telapak menyatu -->
+        <rect x="596" y="562" width="26" height="14" rx="7" fill="#f3c9a6"/>
+        <!-- jari-jari -->
+        <g stroke="#e8b48e" stroke-width="2" stroke-linecap="round">
+          <line x1="599" y1="566" x2="619" y2="566"/>
+          <line x1="599" y1="570" x2="619" y2="570"/>
+          <line x1="600" y1="574" x2="618" y2="574"/>
+        </g>
+        <!-- highlight -->
+        <ellipse cx="609" cy="565" rx="9" ry="3" fill="#ffd9c2" opacity="0.6"/>
+      </g>
+
+      <!-- Hati mengambang di atas mereka -->
+      <g opacity="0.95">
+        <path d="M600 430 c -6 -10 -20 -10 -20 2 c 0 8 11 14 20 22 c 9 -8 20 -14 20 -22 c 0 -12 -14 -12 -20 -2 Z" fill="#ff5c8a"/>
+        <path d="M580 400 c -4 -7 -14 -7 -14 1 c 0 6 8 10 14 16 c 6 -6 14 -10 14 -16 c 0 -8 -10 -8 -14 -1 Z" fill="#ff8fb0" opacity="0.9"/>
+        <path d="M622 405 c -4 -7 -14 -7 -14 1 c 0 6 8 10 14 16 c 6 -6 14 -10 14 -16 c 0 -8 -10 -8 -14 -1 Z" fill="#ff8fb0" opacity="0.9"/>
+      </g>
+    </g>
+
+    <!-- ====== POHON BERBUNGA DEPAN (kecil, memberi bingkai) ====== -->
+    <use href="#blossomTree" x="60"  y="600" transform="scale(0.55) translate(50,470)"/>
+    <use href="#blossomTree" x="1140" y="600" transform="scale(0.55) translate(880,470)"/>
+
+    <!-- Semak-semak depan -->
+    <g fill="#5aa845">
+      <ellipse cx="300" cy="720" rx="90" ry="34"/>
+      <ellipse cx="400" cy="740" rx="70" ry="26"/>
+      <ellipse cx="820" cy="730" rx="80" ry="30"/>
+      <ellipse cx="950" cy="745" rx="90" ry="28"/>
+    </g>
+    <g fill="#7cc964">
+      <ellipse cx="310" cy="712" rx="55" ry="20"/>
+      <ellipse cx="830" cy="722" rx="50" ry="18"/>
+    </g>
+
+    <!-- Kelopak bunga jatuh di sekitar pasangan -->
+    <g fill="#ffb3c8" opacity="0.85">
+      <circle cx="480" cy="620" r="3.5"/>
+      <circle cx="720" cy="640" r="3"/>
+      <circle cx="560" cy="680" r="2.5"/>
+      <circle cx="660" cy="690" r="3"/>
+      <circle cx="510" cy="560" r="2.5"/>
+      <circle cx="700" cy="555" r="2.5"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ================= HUJAN LOVE ================= -->
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- ================= KARTU TEKS ================= -->
+<div id="cardWrap">
+  <div id="card">
+    <div class="judul" id="judul">💙 Happy 1.6th Anniversary 💙</div>
+    <div class="isi" id="isi"></div>
+  </div>
+</div>
+
+<!-- ================= KONTROL MUSIK ================= -->
+<button id="musicBtn" title="Putar / Jeda Musik">🎵</button>
+<div id="hint">🎧 Nyalakan suara & sentuh layar untuk musik</div>
+
+<script>
+/* =========================================================
+   1. HUJAN LOVE
+   ========================================================= */
+(function createHearts() {
+  const container = document.getElementById('hearts');
+  const symbols = ['💙','💖','💕','💗','💞','🌸'];
+  const count = window.innerWidth < 600 ? 22 : 40;
+
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (14 + Math.random() * 22) + 'px';
+    h.style.animationDuration = (7 + Math.random() * 9) + 's';
+    h.style.animationDelay = (-Math.random() * 14) + 's';
+    h.style.opacity = 0.5 + Math.random() * 0.5;
+    container.appendChild(h);
+  }
+})();
+
+/* =========================================================
+   2. TRANSISI TEKS (hilang -> timbul -> hilang -> ganti)
+   ========================================================= */
+(function textSequence() {
+  const judulEl = document.getElementById('judul');
+  const isiEl   = document.getElementById('isi');
+  const card    = document.getElementById('card');
+
+  const slides = [
+    {
+      judul: '💙 Happy 1.6th Anniversary, Dita Sukma Ayu! 💙',
+      isi: 'Terima kasih yaa sudah menjadi alasan tersenyum dan bahagia untukku selama satu setengah tahun lebih ini.'
+    },
+    {
+      judul: '🌿 Adek Sayang… 🌿',
+      isi: 'Aku tahu Tugas Akhir dan PKL jurusan Kesehatan Gigi ini menguras banyak energi dan pikiranmu.\n\nTapi aku percaya banget sama kamu, kamu wanita yang kuat dan penuh bakat.'
+    },
+    {
+      judul: '✨ Semangat, Calon Lulusan Terbaikku ✨',
+      isi: 'Sedikit lagi puncak perjuangan kuliahmu di Poltekkes Semarang akan selesai.\n\nSemangat terus yaa calon calon lulusan terbaikku!'
+    },
+    {
+      judul: '💖 Ada Aku untukmu 💖',
+      isi: 'Kalau capek, istirahat sejenak yaa, ada aku yang selalu siap menemani dan mendoakanmu.\n\nDari aku, yang selalu menyayangimu.'
+    }
+  ];
+
+  let index = 0;
+
+  function typeText(el, text, speed, done) {
+    el.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    el.appendChild(cursor);
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        cursor.insertAdjacentText('beforebegin', text.charAt(i));
+        i++;
+      } else {
+        clearInterval(timer);
+        setTimeout(() => { cursor.remove(); done && done(); }, 700);
+      }
+    }, speed);
+  }
+
+  function showSlide() {
+    const slide = slides[index];
+
+    card.classList.add('hidden');
+
+    setTimeout(() => {
+      judulEl.textContent = slide.judul;
+      isiEl.innerHTML = '';
+      card.classList.remove('hidden');
+
+      setTimeout(() => {
+        typeText(isiEl, slide.isi, 28, () => {
+          setTimeout(() => {
+            index = (index + 1) % slides.length;
+            showSlide();
+          }, 3400);
+        });
+      }, 500);
+    }, 1000);
+  }
+
+  showSlide();
+})();
+
+/* =========================================================
+   3. MUSIK LATAR (Web Audio API — melodi lembut romantis)
+   ========================================================= */
+(function musicPlayer() {
+  const btn = document.getElementById('musicBtn');
+  let audioCtx = null;
+  let playing = false;
+  let masterGain = null;
+  let loopTimer = null;
+
+  const chords = [
+    { bass: 130.81, notes: [261.63, 329.63, 392.00, 523.25] }, // C
+    { bass: 98.00,  notes: [246.94, 392.00, 493.88, 587.33] }, // G
+    { bass: 110.00, notes: [220.00, 261.63, 329.63, 440.00] }, // Am
+    { bass: 87.31,  notes: [174.61, 220.00, 261.63, 349.23] }  // F
+  ];
+
+  const melody = [
+    523.25, 587.33, 659.25, 523.25,
+    493.88, 587.33, 659.25, 783.99,
+    440.00, 523.25, 659.25, 587.33,
+    349.23, 440.00, 523.25, 440.00
+  ];
+
+  function playNote(freq, startTime, duration, volume, type) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(volume, startTime + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+    osc.connect(gain);
+    gain.connect(masterGain);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.05);
+  }
+
+  function scheduleBar(startTime) {
+    chords.forEach((chord, ci) => {
+      const t = startTime + ci * 2.4;
+      playNote(chord.bass, t, 2.4, 0.12, 'sine');
+      chord.notes.forEach((f, ni) => {
+        playNote(f, t, 2.4, 0.035, 'triangle');
+        playNote(f, t + ni * 0.15, 2.0, 0.025, 'sine');
+      });
+    });
+
+    melody.forEach((freq, mi) => {
+      const t = startTime + mi * 0.6;
+      playNote(freq, t, 1.4, 0.06, 'sine');
+    });
+  }
+
+  function loopMusic() {
+    if (!playing || !audioCtx) return;
+    const now = audioCtx.currentTime + 0.1;
+    scheduleBar(now);
+    loopTimer = setTimeout(loopMusic, 9600);
+  }
+
+  function startMusic() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.8;
+      masterGain.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    playing = true;
+    btn.classList.add('playing');
+    btn.textContent = '⏸️';
+    loopMusic();
+  }
+
+  function stopMusic() {
+    playing = false;
+    btn.classList.remove('playing');
+    btn.textContent = '🎵';
+    if (loopTimer) clearTimeout(loopTimer);
+    if (audioCtx) {
+      const now = audioCtx.currentTime;
+      masterGain.gain.cancelScheduledValues(now);
+      masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+      masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.4);
+      setTimeout(() => {
+        if (!playing) {
+          audioCtx.suspend();
+          masterGain.gain.value = 0.8;
+        }
+      }, 500);
+    }
+  }
+
+  btn.addEventListener('click', () => {
+    if (playing) stopMusic();
+    else startMusic();
+  });
+
+  const startOnInteraction = () => {
+    if (!playing) startMusic();
+    window.removeEventListener('pointerdown', startOnInteraction);
+    window.removeEventListener('keydown', startOnInteraction);
+  };
+  window.addEventListener('pointerdown', startOnInteraction, { once: true });
+  window.addEventListener('keydown', startOnInteraction, { once: true });
+
+  const hintEl = document.getElementById('hint');
+  const hideHint = () => {
+    hintEl.style.transition = 'opacity 0.6s';
+    hintEl.style.opacity = '0';
+    setTimeout(() => hintEl.remove(), 700);
+  };
+  btn.addEventListener('click', hideHint);
+})();
+</script>
+</body>
+</html>
